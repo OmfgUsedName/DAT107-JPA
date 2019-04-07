@@ -1,0 +1,61 @@
+Step by step instructions:
+1. Create all 4 tables.
+2. Insert data as you wish, make sure to uphold any restraints
+3. Run alter table command bellow.
+4. Create function and trigger
+
+CREATE TABLE Ansatt( 
+	id serial,
+	brukernavn varchar(4) UNIQUE,
+	fornavn varchar(50),
+	etternavn varchar(50),
+	ansatt date,
+	stilling varchar(50),
+	lonn integer,
+	avdeling int NOT NULL,
+	PRIMARY KEY (id)
+);
+
+CREATE TABLE Avdeling(
+	avdeling_id serial,
+	avdeling_navn varchar(50),
+	avdeling_sjef int NOT NULL UNIQUE,
+	PRIMARY KEY (avdeling_id),
+	FOREIGN KEY (avdeling_sjef) REFERENCES Ansatt(id)
+);
+
+CREATE TABLE Prosjekt(
+	prosjekt_id serial,
+	prosjekt_navn varchar(50),
+	prosjekt_beskrivelse char(150),
+	PRIMARY KEY (prosjekt_id)
+);
+
+CREATE TABLE Prosjektdeltagere(
+	prosjekt_id int NOT NULL,
+	ansatt_id int NOT NULL,
+	rolle char(50),
+	timer int,
+	PRIMARY KEY (prosjekt_id, ansatt_id),
+	FOREIGN KEY (prosjekt_id) REFERENCES Prosjekt(prosjekt_id),
+	FOREIGN KEY (ansatt_id) REFERENCES Ansatt(id)
+);
+
+
+ALTER TABLE Ansatt
+ADD CONSTRAINT fk_ansatt_avdeling FOREIGN KEY (avdeling)
+REFERENCES avdeling (avdeling_id)
+ON DELETE NO ACTION ON UPDATE CASCADE;
+
+CREATE or REPLACE FUNCTION fix_avdeling_id() RETURNS TRIGGER AS $$
+BEGIN
+	UPDATE Ansatt
+	SET avdeling = NEW.avdeling_id
+	WHERE id = NEW.avdeling_sjef;
+	return NEW;
+END
+$$ language plpgsql;
+
+CREATE CONSTRAINT TRIGGER avdeling_insert_trigger AFTER INSERT 
+ON avdeling FOR EACH ROW
+	EXECUTE PROCEDURE fix_avdeling_id();

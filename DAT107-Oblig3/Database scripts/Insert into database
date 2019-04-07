@@ -1,0 +1,20 @@
+INSERT INTO ansatt (
+VALUES (DEFAULT,'sal', 'Stig', 'Lotuft','2019-9-1','Ingenior',450000,1),
+(DEFAULT,'sol', 'Sander', 'Lotuft','2019-9-2','Lerer',400000,2),
+(DEFAULT,'sga', 'Silje', 'Grop Angnes','2015-5-3','HR-konsulent',650000,2)
+);
+
+INSERT INTO avdeling (
+VALUES (DEFAULT, 'Montor', 1),
+(DEFAULT, 'Salg', 2)
+);
+
+INSERT INTO prosjekt(
+VALUES (DEFAULT, 'Utbetring av nett', 'Utbetring av nett på Sunnmøre'),
+(2, 'Straumsalg', 'Salg av straum til nettkundar')
+);
+
+INSERT INTO prosjektdeltagere (
+VALUES (1, 1, 'Admin', 5),
+(2,2, 'Operatør', 50)
+);
